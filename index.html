@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Union BU - QR Code Generator</title>
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
 <style>
@@ -15,7 +16,7 @@
   }
 
   img.logo {
-    width: 250px;
+    width: 140px;
     margin-bottom: 1em;
     transition: filter 0.5s ease;
   }
@@ -302,6 +303,48 @@
     filter: drop-shadow(0 0 15px #d291bc);
     border-radius: 20px;
   }
+  @media screen and (max-width: 768px) {
+  #controls {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 1em;
+    box-sizing: border-box;
+  }
+
+  input[type="text"],
+  select,
+  input[type="file"],
+  button {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  input[type="color"] {
+    width: 100%;
+    max-width: 100px;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  img.logo {
+    width: 50%;
+    max-width: 160px;
+    height: auto;
+  }
+
+  #canvas canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 300px;
+  }
+
+  #themeSelector {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+
 </style>
 </head>
 <body class="theme-cyberpunk">
@@ -360,7 +403,7 @@
     type: "canvas",
     data: "",
     dotsOptions: {
-      color: "#000000",
+      color: "#9d4edd",
       type: "rounded"
     },
     cornersDotOptions: {
@@ -381,7 +424,7 @@
   qrCode.append(document.getElementById("canvas"));
 
   // เก็บค่าสีไว้ก่อน
-  let selectedDotColor = "#000000";
+  let selectedDotColor = "#9d4edd";
   let selectedBgColor = "#ffffff";
 
   // ดักค่าที่เปลี่ยน
