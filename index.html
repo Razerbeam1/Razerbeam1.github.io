@@ -12,70 +12,78 @@
       background: #f4f1f9;
       color: #2c003e;
     }
-
     h1 {
       color: #4b0082;
       margin-bottom: 1.5em;
     }
-
     #canvas {
       margin-top: 30px;
     }
-
-    input {
-      width: 320px;
-      padding: 12px;
+    input, select {
+      width: 300px;
+      padding: 10px;
       font-size: 16px;
+      margin: 5px;
       border: 2px solid #4b0082;
       border-radius: 8px;
-      outline: none;
     }
-
+    input[type="color"] {
+      width: 60px;
+      padding: 0;
+      height: 42px;
+    }
     button {
       background-color: #6a0dad;
       color: white;
       border: none;
       padding: 12px 20px;
       font-size: 16px;
-      margin: 0 5px;
+      margin: 5px;
       cursor: pointer;
       border-radius: 8px;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #580088;
     }
-
-    @media (max-width: 480px) {
-      input {
-        width: 90%;
-      }
-
-      button {
-        width: 90%;
-        margin-top: 10px;
-      }
+    #controls {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
   <h1>Student Union Bangkok University</h1>
-  <input type="text" id="urlInput" placeholder="ใส่ลิงก์ที่นี่ เช่น https://example.com" />
-  <br><br>
-  <button onclick="generateQR()">Generate QR</button>
-  <button onclick="downloadQR()">Download PNG</button>
+
+  <div id="controls">
+    <input type="text" id="urlInput" placeholder="ใส่ลิงก์ที่นี่ เช่น https://example.com" />
+    <br>
+    <label>รูปร่าง:</label>
+    <select id="styleSelect">
+      <option value="square">square</option>
+      <option value="rounded">rounded</option>
+      <option value="dots">dots</option>
+      <option value="classy">classy</option>
+      <option value="classy-rounded">classy-rounded</option>
+    </select>
+    <label>สี:</label>
+    <input type="color" id="colorPicker" value="#4b0082" />
+    <br>
+    <label>ใส่โลโก้: </label>
+    <input type="file" id="logoUpload" accept="image/*" />
+    <br>
+    <button onclick="generateQR()">Generate QR</button>
+    <button onclick="downloadQR()">Download PNG</button>
+  </div>
 
   <div id="canvas"></div>
 
   <script>
-    const qrCode = new QRCodeStyling({
+    let qrCode = new QRCodeStyling({
       width: 300,
       height: 300,
       type: "canvas",
       data: "",
-      image: "https://upload.wikimedia.org/wikipedia/commons/3/3a/OpenAI_Logo.svg", // ใส่โลโก้จริงของ Student Union ได้ภายหลัง
       dotsOptions: {
         color: "#4b0082",
         type: "rounded"
@@ -92,17 +100,41 @@
     qrCode.append(document.getElementById("canvas"));
 
     function generateQR() {
-      const url = document.getElementById("urlInput").value;
-      if (url) {
-        qrCode.update({
-          data: url
-        });
+      const url = document.getElementById("urlInput").value.trim();
+      const style = document.getElementById("styleSelect").value;
+      const color = document.getElementById("colorPicker").value;
+
+      if (!url) {
+        alert("กรุณาใส่ลิงก์ก่อน");
+        return;
       }
+
+      qrCode.update({
+        data: url,
+        dotsOptions: {
+          color: color,
+          type: style
+        }
+      });
     }
 
     function downloadQR() {
       qrCode.download({ name: "qr-code", extension: "png" });
     }
+
+    // อัปโหลดโลโก้
+    document.getElementById("logoUpload").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        qrCode.update({
+          image: event.target.result
+        });
+      };
+      reader.readAsDataURL(file);
+    });
   </script>
 
 </body>
