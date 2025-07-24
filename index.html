@@ -1,79 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Student Union Bangkok University - QR Generator</title>
+  <title>สหภาพนิสิต ม.กรุงเทพ - สร้าง QR Code</title>
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Sarabun', sans-serif;
       text-align: center;
-      padding: 2em;
-      background: #f4f1f9;
+      padding: 1em;
+      background: #f6f1fb;
       color: #2c003e;
     }
+
+    img.logo {
+      width: 120px;
+      margin-bottom: 1em;
+    }
+
     h1 {
+      font-size: 24px;
       color: #4b0082;
-      margin-bottom: 1.5em;
+      margin-bottom: 1em;
     }
-    #canvas {
-      margin-top: 30px;
-    }
-    input, select {
-      width: 300px;
+
+    input[type="text"], select, input[type="file"] {
+      width: 280px;
       padding: 10px;
       font-size: 16px;
-      margin: 5px;
+      margin: 6px auto;
       border: 2px solid #4b0082;
       border-radius: 8px;
+      display: block;
     }
+
     input[type="color"] {
-      width: 60px;
-      padding: 0;
       height: 42px;
+      width: 60px;
+      margin: 6px;
+      border: none;
+      background: none;
     }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
     button {
       background-color: #6a0dad;
       color: white;
       border: none;
-      padding: 12px 20px;
+      padding: 10px 20px;
       font-size: 16px;
-      margin: 5px;
-      cursor: pointer;
+      margin: 10px 5px;
       border-radius: 8px;
+      cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #580088;
     }
-    #controls {
+
+    #canvas {
       margin-top: 20px;
+    }
+
+    @media (max-width: 480px) {
+      input[type="text"], select {
+        width: 90%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Student Union Bangkok University</h1>
+  <!-- โลโก้ชื่อไฟล์ LOGOPP.png -->
+  <img src="LOGOPP.png" alt="โลโก้" class="logo" />
+
+  <h1>สหภาพนิสิต มหาวิทยาลัยกรุงเทพ</h1>
 
   <div id="controls">
-    <input type="text" id="urlInput" placeholder="ใส่ลิงก์ที่นี่ เช่น https://example.com" />
-    <br>
-    <label>รูปร่าง:</label>
-    <select id="styleSelect">
-      <option value="square">square</option>
-      <option value="rounded">rounded</option>
-      <option value="dots">dots</option>
-      <option value="classy">classy</option>
-      <option value="classy-rounded">classy-rounded</option>
+    <input type="text" id="urlInput" placeholder="กรอกลิงก์ เช่น https://example.com" />
+
+    <label for="dotStyle">รูปร่างจุด (Dot Style)</label>
+    <select id="dotStyle">
+      <option value="square">สี่เหลี่ยม</option>
+      <option value="rounded" selected>มน</option>
+      <option value="dots">จุดกลม</option>
+      <option value="classy">หรู</option>
+      <option value="classy-rounded">หรูมน</option>
     </select>
-    <label>สี:</label>
+
+    <label for="cornerStyle">มุม (Corner Style)</label>
+    <select id="cornerStyle">
+      <option value="square">เหลี่ยม</option>
+      <option value="dot">จุด</option>
+      <option value="extra-rounded">โค้งมาก</option>
+    </select>
+
+    <label for="colorPicker">สีจุด</label>
     <input type="color" id="colorPicker" value="#4b0082" />
-    <br>
-    <label>ใส่โลโก้: </label>
+
+    <label for="logoUpload">อัปโหลดโลโก้ภายใน QR</label>
     <input type="file" id="logoUpload" accept="image/*" />
-    <br>
-    <button onclick="generateQR()">Generate QR</button>
-    <button onclick="downloadQR()">Download PNG</button>
+
+    <button onclick="generateQR()">สร้าง QR Code</button>
+    <button onclick="downloadQR()">ดาวน์โหลด PNG</button>
   </div>
 
   <div id="canvas"></div>
@@ -88,6 +123,12 @@
         color: "#4b0082",
         type: "rounded"
       },
+      cornersDotOptions: {
+        type: "square"
+      },
+      cornersSquareOptions: {
+        type: "square"
+      },
       backgroundOptions: {
         color: "#ffffff"
       },
@@ -101,7 +142,8 @@
 
     function generateQR() {
       const url = document.getElementById("urlInput").value.trim();
-      const style = document.getElementById("styleSelect").value;
+      const dotType = document.getElementById("dotStyle").value;
+      const cornerType = document.getElementById("cornerStyle").value;
       const color = document.getElementById("colorPicker").value;
 
       if (!url) {
@@ -113,7 +155,13 @@
         data: url,
         dotsOptions: {
           color: color,
-          type: style
+          type: dotType
+        },
+        cornersDotOptions: {
+          type: cornerType
+        },
+        cornersSquareOptions: {
+          type: cornerType
         }
       });
     }
@@ -122,11 +170,10 @@
       qrCode.download({ name: "qr-code", extension: "png" });
     }
 
-    // อัปโหลดโลโก้
+    // โลโก้กลาง QR
     document.getElementById("logoUpload").addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function (event) {
         qrCode.update({
