@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Union Bangkok University - QR Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 2em;
+      background: #f4f1f9;
+      color: #2c003e;
+    }
+
+    h1 {
+      color: #4b0082;
+      margin-bottom: 1.5em;
+    }
+
+    #canvas {
+      margin-top: 30px;
+    }
+
+    input {
+      width: 320px;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #4b0082;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #580088;
+    }
+
+    @media (max-width: 480px) {
+      input {
+        width: 90%;
+      }
+
+      button {
+        width: 90%;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Student Union Bangkok University</h1>
+  <input type="text" id="urlInput" placeholder="ใส่ลิงก์ที่นี่ เช่น https://example.com" />
+  <br><br>
+  <button onclick="generateQR()">Generate QR</button>
+  <button onclick="downloadQR()">Download PNG</button>
+
+  <div id="canvas"></div>
+
+  <script>
+    const qrCode = new QRCodeStyling({
+      width: 300,
+      height: 300,
+      type: "canvas",
+      data: "",
+      image: "https://upload.wikimedia.org/wikipedia/commons/3/3a/OpenAI_Logo.svg", // ใส่โลโก้จริงของ Student Union ได้ภายหลัง
+      dotsOptions: {
+        color: "#4b0082",
+        type: "rounded"
+      },
+      backgroundOptions: {
+        color: "#ffffff"
+      },
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 8
+      }
+    });
+
+    qrCode.append(document.getElementById("canvas"));
+
+    function generateQR() {
+      const url = document.getElementById("urlInput").value;
+      if (url) {
+        qrCode.update({
+          data: url
+        });
+      }
+    }
+
+    function downloadQR() {
+      qrCode.download({ name: "qr-code", extension: "png" });
+    }
+  </script>
+
+</body>
+</html>
