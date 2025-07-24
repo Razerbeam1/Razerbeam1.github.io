@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>สหภาพนิสิต ม.กรุงเทพ - สร้าง QR Code</title>
+  <meta charset="UTF-8" />
+  <title>Student Union Bangkok University - QR Code Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
   <style>
     body {
@@ -77,38 +77,41 @@
 </head>
 <body>
 
-  <!-- โลโก้ชื่อไฟล์ LOGOPP.png -->
-  <img src="LOGOPP.png" alt="โลโก้" class="logo" />
+  <!-- Logo file LOGOPP.png -->
+  <img src="LOGOPP.png" alt="Logo" class="logo" />
 
-  <h1>สหภาพนิสิต มหาวิทยาลัยกรุงเทพ</h1>
+  <h1>Student Union Bangkok University</h1>
 
   <div id="controls">
-    <input type="text" id="urlInput" placeholder="กรอกลิงก์ เช่น https://example.com" />
+    <input type="text" id="urlInput" placeholder="Enter URL, e.g. https://example.com" />
 
-    <label for="dotStyle">รูปร่างจุด (Dot Style)</label>
+    <label for="dotStyle">Dot Shape (Dot Style)</label>
     <select id="dotStyle">
-      <option value="square">สี่เหลี่ยม</option>
-      <option value="rounded" selected>มน</option>
-      <option value="dots">จุดกลม</option>
-      <option value="classy">หรู</option>
-      <option value="classy-rounded">หรูมน</option>
+      <option value="square">Square</option>
+      <option value="rounded" selected>Rounded</option>
+      <option value="dots">Dots</option>
+      <option value="classy">Classy</option>
+      <option value="classy-rounded">Classy Rounded</option>
     </select>
 
-    <label for="cornerStyle">มุม (Corner Style)</label>
+    <label for="cornerStyle">Corner Style</label>
     <select id="cornerStyle">
-      <option value="square">เหลี่ยม</option>
-      <option value="dot">จุด</option>
-      <option value="extra-rounded">โค้งมาก</option>
+      <option value="square">Square</option>
+      <option value="dot">Dot</option>
+      <option value="extra-rounded">Extra Rounded</option>
     </select>
 
-    <label for="colorPicker">สีจุด</label>
+    <label for="colorPicker">Dot Color</label>
     <input type="color" id="colorPicker" value="#4b0082" />
 
-    <label for="logoUpload">อัปโหลดโลโก้ภายใน QR</label>
+    <label for="logoUpload">Upload Logo inside QR</label>
     <input type="file" id="logoUpload" accept="image/*" />
 
-    <button onclick="generateQR()">สร้าง QR Code</button>
-    <button onclick="downloadQR()">ดาวน์โหลด PNG</button>
+    <label for="bgUpload">Upload Background Image (Art / AI Background)</label>
+    <input type="file" id="bgUpload" accept="image/*" />
+
+    <button onclick="generateQR()">Generate QR Code</button>
+    <button onclick="downloadQR()">Download PNG</button>
   </div>
 
   <div id="canvas"></div>
@@ -130,7 +133,8 @@
         type: "square"
       },
       backgroundOptions: {
-        color: "#ffffff"
+        color: "#ffffff",
+        image: undefined
       },
       imageOptions: {
         crossOrigin: "anonymous",
@@ -147,7 +151,7 @@
       const color = document.getElementById("colorPicker").value;
 
       if (!url) {
-        alert("กรุณาใส่ลิงก์ก่อน");
+        alert("Please enter a URL first");
         return;
       }
 
@@ -170,7 +174,7 @@
       qrCode.download({ name: "qr-code", extension: "png" });
     }
 
-    // โลโก้กลาง QR
+    // Upload logo inside QR
     document.getElementById("logoUpload").addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -178,6 +182,22 @@
       reader.onload = function (event) {
         qrCode.update({
           image: event.target.result
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Upload background image
+    document.getElementById("bgUpload").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        qrCode.update({
+          backgroundOptions: {
+            image: event.target.result,
+            crossOrigin: "anonymous"
+          }
         });
       };
       reader.readAsDataURL(file);
