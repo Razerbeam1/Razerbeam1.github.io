@@ -344,8 +344,8 @@
     <label for="logoUpload">Upload Logo inside QR</label>
     <input type="file" id="logoUpload" accept="image/*" />
 
-    <label for="bgUpload">Upload Background Image (Art / AI Background)</label>
-    <input type="file" id="bgUpload" accept="image/*" />
+    <label for="bgColorPicker">Background Color</label>
+    <input type="color" id="bgColorPicker" value="#ffffff" />   
 
     <button onclick="generateQR()">Generate QR Code</button>
     <button onclick="downloadQR()">Download PNG</button>
@@ -353,31 +353,31 @@
 
   <div id="canvas"></div>
 
-  <script>
-    let qrCode = new QRCodeStyling({
-      width: 300,
-      height: 300,
-      type: "canvas",
-      data: "",
-      dotsOptions: {
-        color: "#9d4edd",
-        type: "rounded"
-      },
-      cornersDotOptions: {
-        type: "square"
-      },
-      cornersSquareOptions: {
-        type: "square"
-      },
-      backgroundOptions: {
-        color: "#1a1a2e",
-        image: undefined
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 8
-      }
-    });
+ <script>
+  let qrCode = new QRCodeStyling({
+    width: 300,
+    height: 300,
+    type: "canvas",
+    data: "",
+    dotsOptions: {
+      color: "#9d4edd",
+      type: "rounded"
+    },
+    cornersDotOptions: {
+      type: "square"
+    },
+    cornersSquareOptions: {
+      type: "square"
+    },
+    backgroundOptions: {
+      color: "#ffffff",
+      image: undefined
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 8
+    }
+  });
 
     qrCode.append(document.getElementById("canvas"));
 
@@ -424,27 +424,20 @@
       reader.readAsDataURL(file);
     });
 
-    // Upload background image
-    document.getElementById("bgUpload").addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        qrCode.update({
-          backgroundOptions: {
-            image: event.target.result,
-            crossOrigin: "anonymous"
-          }
-        });
-      };
-      reader.readAsDataURL(file);
+     document.getElementById("bgColorPicker").addEventListener("input", (e) => {
+    qrCode.update({
+      backgroundOptions: {
+        color: e.target.value,
+        image: undefined
+      }
     });
+  });
 
-    // Theme switcher
-    const themeSelector = document.getElementById('themeSelector');
-    themeSelector.addEventListener('change', (e) => {
-      document.body.className = e.target.value;
-    });
-  </script>
+  // Theme switcher
+  const themeSelector = document.getElementById('themeSelector');
+  themeSelector.addEventListener('change', (e) => {
+    document.body.className = e.target.value;
+  });
+</script>
 </body>
 </html>
