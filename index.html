@@ -415,17 +415,21 @@
   qrCode.append(document.getElementById("canvas"));
 
   // เก็บค่าสีไว้ก่อน
-  let selectedDotColor = "#9d4edd";
-  let selectedBgColor = "#ffffff";
+let selectedDotColor = "#000000";
+let selectedBgColor = "#ffffff";
 
-  // ดักค่าที่เปลี่ยน
-  document.getElementById("colorPicker").addEventListener("input", (e) => {
-    selectedDotColor = e.target.value;
-  });
+// ตั้งค่า input สี ให้ตรงกับค่าตัวแปรตอนโหลดหน้า
+document.getElementById("colorPicker").value = selectedDotColor;
+document.getElementById("bgColorPicker").value = selectedBgColor;
 
-  document.getElementById("bgColorPicker").addEventListener("input", (e) => {
-    selectedBgColor = e.target.value;
-  });
+// ดักค่าที่เปลี่ยน
+document.getElementById("colorPicker").addEventListener("input", (e) => {
+  selectedDotColor = e.target.value;
+});
+
+document.getElementById("bgColorPicker").addEventListener("input", (e) => {
+  selectedBgColor = e.target.value;
+});
 
   // Generate QR เมื่อกดปุ่ม
   function generateQR() {
