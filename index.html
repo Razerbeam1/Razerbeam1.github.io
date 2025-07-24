@@ -1,86 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Student Union Bangkok University - QR Code Generator</title>
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
-  <style>
-    body {
-      font-family: 'Sarabun', sans-serif;
-      text-align: center;
-      padding: 1em;
-      background: #f6f1fb;
-      color: #2c003e;
-    }
+<meta charset="UTF-8" />
+<title>Student Union BU - QR Code Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
+<style>
+  /* เบื้องต้น common styles */
+  body {
+    font-family: 'Sarabun', sans-serif;
+    text-align: center;
+    padding: 1em;
+    margin: 0;
+    transition: background 0.5s ease, color 0.5s ease;
+  }
 
-    img.logo {
-      width: 120px;
-      margin-bottom: 1em;
-    }
+  img.logo {
+    width: 300px;
+    margin-bottom: 1em;
+    transition: filter 0.5s ease;
+  }
 
-    h1 {
-      font-size: 24px;
-      color: #4b0082;
-      margin-bottom: 1em;
-    }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 1em;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+  }
 
-    input[type="text"], select, input[type="file"] {
-      width: 280px;
-      padding: 10px;
-      font-size: 16px;
-      margin: 6px auto;
-      border: 2px solid #4b0082;
-      border-radius: 8px;
-      display: block;
-    }
+  input[type="text"], select, input[type="file"] {
+    width: 280px;
+    padding: 10px;
+    font-size: 16px;
+    margin: 8px auto;
+    border-radius: 8px;
+    display: block;
+    border: 2px solid;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
 
-    input[type="color"] {
-      height: 42px;
-      width: 60px;
-      margin: 6px;
-      border: none;
-      background: none;
-    }
+  input[type="text"]::placeholder {
+    transition: color 0.3s ease;
+  }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+  input[type="color"] {
+    height: 42px;
+    width: 60px;
+    margin: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+  }
 
-    button {
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px 5px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+  label {
+    display: block;
+    margin-top: 14px;
+    font-weight: 700;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+  }
 
-    button:hover {
-      background-color: #580088;
-    }
+  button {
+    padding: 12px 26px;
+    font-size: 16px;
+    margin: 12px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
 
-    #canvas {
-      margin-top: 20px;
-    }
+  #canvas {
+    margin-top: 25px;
+    display: inline-block;
+    padding: 12px;
+    border-radius: 16px;
+    transition: background 0.5s ease, filter 0.5s ease;
+  }
 
-    @media (max-width: 480px) {
-      input[type="text"], select {
-        width: 90%;
-      }
-    }
-  </style>
+  /* ปุ่มเลือกธีม มุมขวาบน */
+  #themeSelector {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 2px solid #7b2ff7;
+    background: #3a0ca3;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 1000;
+    user-select: none;
+  }
+
+  /* ==== ธีม 1: Cyberpunk ==== */
+  .theme-cyberpunk {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #a259ff;
+  }
+  .theme-cyberpunk h1 {
+    color: #f72585;
+    text-shadow: 0 0 10px #f72585;
+  }
+  .theme-cyberpunk img.logo {
+    filter: drop-shadow(0 0 6px #f72585);
+  }
+  .theme-cyberpunk input[type="text"],
+  .theme-cyberpunk select,
+  .theme-cyberpunk input[type="file"] {
+    background-color: #1a0f3f;
+    border-color: #f72585;
+    color: #f3d1ff;
+  }
+  .theme-cyberpunk input[type="text"]::placeholder {
+    color: #f72585aa;
+  }
+  .theme-cyberpunk input[type="text"]:focus,
+  .theme-cyberpunk select:focus,
+  .theme-cyberpunk input[type="file"]:focus {
+    background-color: #2a1262;
+    border-color: #ff0080;
+    color: #fff;
+  }
+  .theme-cyberpunk input[type="color"] {
+    filter: drop-shadow(0 0 4px #ff0080);
+  }
+  .theme-cyberpunk label {
+    color: #f72585cc;
+    text-shadow: 0 0 6px #ff0080;
+  }
+  .theme-cyberpunk button {
+    background: linear-gradient(45deg, #f72585, #720026);
+    box-shadow: 0 0 20px #ff0080;
+    color: #fff;
+  }
+  .theme-cyberpunk button:hover {
+    background: linear-gradient(45deg, #720026, #f72585);
+    box-shadow: 0 0 30px #ff0080;
+  }
+  .theme-cyberpunk #canvas {
+    background: #150023;
+    filter: drop-shadow(0 0 15px #ff0080);
+  }
+
+  /* ==== ธีม 2: ฟุ้งฟิ้ง (Soft Glow) ==== */
+  .theme-softglow {
+    background: linear-gradient(135deg, #9b5de5, #f15bb5, #fee440);
+    color: #4a148c;
+  }
+  .theme-softglow h1 {
+    color: #6a1b9a;
+    text-shadow: 0 0 6px #e91e63;
+  }
+  .theme-softglow img.logo {
+    filter: drop-shadow(0 0 8px #e91e63);
+  }
+  .theme-softglow input[type="text"],
+  .theme-softglow select,
+  .theme-softglow input[type="file"] {
+    background-color: #f3e5f5;
+    border-color: #9c27b0;
+    color: #4a148c;
+  }
+  .theme-softglow input[type="text"]::placeholder {
+    color: #b39ddb;
+  }
+  .theme-softglow input[type="text"]:focus,
+  .theme-softglow select:focus,
+  .theme-softglow input[type="file"]:focus {
+    background-color: #e1bee7;
+    border-color: #7b1fa2;
+    color: #311b92;
+  }
+  .theme-softglow input[type="color"] {
+    filter: drop-shadow(0 0 4px #ab47bc);
+  }
+  .theme-softglow label {
+    color: #7b1fa2;
+    text-shadow: 0 0 5px #ba68c8;
+  }
+  .theme-softglow button {
+    background: linear-gradient(45deg, #ab47bc, #ce93d8);
+    box-shadow: 0 0 15px #ba68c8;
+    color: #311b92;
+  }
+  .theme-softglow button:hover {
+    background: linear-gradient(45deg, #ce93d8, #ab47bc);
+    box-shadow: 0 0 20px #ba68c8;
+    color: #4a148c;
+  }
+  .theme-softglow #canvas {
+    background: #ede7f6;
+    filter: drop-shadow(0 0 15px #ba68c8);
+  }
+
+  /* ==== ธีม 3: ดิบเถื่อน (Rough) ==== */
+  .theme-rough {
+    background: linear-gradient(135deg, #2c003e, #000000);
+    color: #d3c0f9;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .theme-rough h1 {
+    color: #9d4edd;
+    text-shadow: 0 0 10px #7b2ff7;
+  }
+  .theme-rough img.logo {
+    filter: drop-shadow(0 0 5px #7b2ff7);
+  }
+  .theme-rough input[type="text"],
+  .theme-rough select,
+  .theme-rough input[type="file"] {
+    background-color: #1a1a2e;
+    border-color: #7b2ff7;
+    color: #d3c0f9;
+    border-style: dashed;
+  }
+  .theme-rough input[type="text"]::placeholder {
+    color: #b3a1f9;
+  }
+  .theme-rough input[type="text"]:focus,
+  .theme-rough select:focus,
+  .theme-rough input[type="file"]:focus {
+    background-color: #311b92;
+    border-color: #9d4edd;
+    color: #eee;
+  }
+  .theme-rough input[type="color"] {
+    filter: drop-shadow(0 0 2px #9d4edd);
+  }
+  .theme-rough label {
+    color: #c9baff;
+    text-shadow: 0 0 3px #7b2ff7;
+  }
+  .theme-rough button {
+    background: linear-gradient(45deg, #7b2ff7, #3a0ca3);
+    box-shadow: 0 0 15px #7b2ff7;
+    color: #eee;
+    border: 2px solid #7b2ff7;
+  }
+  .theme-rough button:hover {
+    background: linear-gradient(45deg, #3a0ca3, #7b2ff7);
+    box-shadow: 0 0 25px #9d4edd;
+    color: #fff;
+  }
+  .theme-rough #canvas {
+    background: #1a1a2e;
+    filter: drop-shadow(0 0 10px #7b2ff7);
+  }
+
+  /* ==== ธีม 4: น่ารัก (Cute) ==== */
+  .theme-cute {
+    background: linear-gradient(135deg, #d6a4a4, #d291bc, #7b2ff7);
+    color: #3a0ca3;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+  .theme-cute h1 {
+    color: #540d6e;
+    text-shadow: 0 0 8px #a64ca6;
+  }
+  .theme-cute img.logo {
+    filter: drop-shadow(0 0 6px #a64ca6);
+  }
+  .theme-cute input[type="text"],
+  .theme-cute select,
+  .theme-cute input[type="file"] {
+    background-color: #f9e6fa;
+    border-color: #a64ca6;
+    color: #540d6e;
+    border-radius: 20px;
+  }
+  .theme-cute input[type="text"]::placeholder {
+    color: #d7b1da;
+  }
+  .theme-cute input[type="text"]:focus,
+  .theme-cute select:focus,
+  .theme-cute input[type="file"]:focus {
+    background-color: #e2c2f4;
+    border-color: #7b2ff7;
+    color: #311b92;
+  }
+  .theme-cute input[type="color"] {
+    filter: drop-shadow(0 0 4px #7b2ff7);
+    border-radius: 50%;
+  }
+  .theme-cute label {
+    color: #7b2ff7;
+    text-shadow: 0 0 6px #d291bc;
+  }
+  .theme-cute button {
+    background: linear-gradient(45deg, #d291bc, #7b2ff7);
+    box-shadow: 0 0 15px #d291bc;
+    color: #311b92;
+    border-radius: 20px;
+  }
+  .theme-cute button:hover {
+    background: linear-gradient(45deg, #7b2ff7, #d291bc);
+    box-shadow: 0 0 25px #7b2ff7;
+    color: #540d6e;
+  }
+  .theme-cute #canvas {
+    background: #f9e6fa;
+    filter: drop-shadow(0 0 15px #d291bc);
+    border-radius: 20px;
+  }
+</style>
 </head>
-<body>
+<body class="theme-cyberpunk">
 
-  <!-- Logo file LOGOPP.png -->
+  <!-- Logo -->
   <img src="LOGOPP.png" alt="Logo" class="logo" />
 
   <h1>Student Union Bangkok University</h1>
+
+  <!-- Theme selector -->
+  <select id="themeSelector" title="Select Theme">
+    <option value="theme-cyberpunk">Cyberpunk</option>
+    <option value="theme-softglow">Soft Glow</option>
+    <option value="theme-rough">Rough</option>
+    <option value="theme-cute">Cute</option>
+  </select>
 
   <div id="controls">
     <input type="text" id="urlInput" placeholder="Enter URL, e.g. https://example.com" />
@@ -102,7 +339,7 @@
     </select>
 
     <label for="colorPicker">Dot Color</label>
-    <input type="color" id="colorPicker" value="#4b0082" />
+    <input type="color" id="colorPicker" value="#9d4edd" />
 
     <label for="logoUpload">Upload Logo inside QR</label>
     <input type="file" id="logoUpload" accept="image/*" />
@@ -123,7 +360,7 @@
       type: "canvas",
       data: "",
       dotsOptions: {
-        color: "#4b0082",
+        color: "#9d4edd",
         type: "rounded"
       },
       cornersDotOptions: {
@@ -133,7 +370,7 @@
         type: "square"
       },
       backgroundOptions: {
-        color: "#ffffff",
+        color: "#1a1a2e",
         image: undefined
       },
       imageOptions: {
@@ -202,7 +439,12 @@
       };
       reader.readAsDataURL(file);
     });
-  </script>
 
+    // Theme switcher
+    const themeSelector = document.getElementById('themeSelector');
+    themeSelector.addEventListener('change', (e) => {
+      document.body.className = e.target.value;
+    });
+  </script>
 </body>
 </html>
