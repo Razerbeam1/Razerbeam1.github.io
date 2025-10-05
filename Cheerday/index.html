@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Glamorous Cheer – Registration</title>
   <style>
     :root{
@@ -10,47 +11,46 @@
       --blue-1:#201B59; --blue-2:#2E2A78; --plum-2:#3A1F5C;
       --burgundy:#5C0F1B;
       --logo-w: clamp(120px, 28vw, 220px);
+
+      /* ตั้ง “ความสูงฟอร์ม” ให้ยาวพอจนไม่ต้องเลื่อนใน iframe */
+      --form-h-desktop: 3400px;   /* ปรับได้ตามความยาวฟอร์มจริง */
+      --form-h-tablet:  3600px;
+      --form-h-mobile:  4000px;
     }
 
-    /* Reset + no horizontal scroll */
+    /* Reset + กันล้นแนวนอน */
     *,*::before,*::after{ box-sizing:border-box; }
-    html, body { height:100%; overflow-x:hidden; }
+    html, body { height:auto; min-height:100%; overflow-x:hidden; }
 
-    /* DEFAULT (non-iOS): no page scroll, iframe scrolls */
+    /* ใช้ page scroll เท่านั้น */
     body{
       margin:0; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      overflow-y:hidden;                    /* no page scroll */
-      min-height:100dvh;
       background: linear-gradient(180deg, #201B59, #2E2A78 60%, #3A1F5C);
-      display:flex; justify-content:center;
       -webkit-text-size-adjust:100%;
     }
 
     .container{
-      width:min(100vw,1080px);
-      height:100dvh;                       /* full viewport */
+      width:min(100%,1080px);
+      margin:16px auto 24px;
       padding:0 12px;
-      display:flex;
     }
 
     .stage-card{
-      flex:1; display:flex; flex-direction:column;
-      border-radius:24px; overflow:hidden; /* rounded without spilling */
+      border-radius:24px; overflow:hidden;           /* ครอบขอบมน */
       box-shadow:0 24px 60px rgba(0,0,0,.45);
       background: linear-gradient(160deg, #14143a 0%, #22236b 55%, #2f2a7a 100%);
-      max-width:100%;
     }
 
     /* Header */
     .head{
-      padding:12px 16px 8px;
+      padding:16px 16px 10px;
       display:flex; flex-direction:column; align-items:center; gap:8px;
-      text-align:center; flex:0 0 auto; max-width:100%;
+      text-align:center;
     }
     .logo{
       display:block; width:var(--logo-w); height:auto; margin-inline:auto;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
       max-width:100%;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
     }
     .ribbon{
       display:inline-block; padding:8px 16px; border-radius:999px;
@@ -59,59 +59,41 @@
       box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
       white-space:nowrap; max-width:100%;
     }
-    h1{ margin:2px 0; font-weight:800; letter-spacing:.4px; }
+    h1{ margin:4px 0 2px; font-weight:800; letter-spacing:.4px; }
     .sub{
-      margin:0 8px 6px; opacity:.95; text-align:center; line-height:1.35;
+      margin:0 8px 10px; opacity:.95; text-align:center; line-height:1.35;
       word-break:keep-all; overflow-wrap:anywhere;
     }
 
-    /* Form area (DEFAULT: iframe scrolls) */
+    /* ฟอร์ม: ไม่ให้ iframe สกรอลล์ → ตั้งความสูงคงที่ยาวพอ แล้วปล่อยให้ “หน้าเว็บ” เลื่อนแทน */
     .iframe-wrap{
-      position:relative; flex:1 1 auto; min-height:0;
+      position:relative; width:100%;
+      height: var(--form-h-desktop);          /* ค่า default (เดสก์ท็อป) */
       border-top:1px solid rgba(255,255,255,.18);
       border-bottom:1px solid rgba(255,255,255,.12);
-      max-width:100%; overflow:hidden;
+      background: #fff;                        /* ให้พื้นที่ฟอร์มอ่านสบาย */
+      overflow: visible;                       /* ไม่ตัดขอบภายใน */
     }
     iframe{
       position:absolute; inset:0; width:100%; height:100%;
       border:0; display:block;
-      -webkit-overflow-scrolling:touch;
-      overscroll-behavior:contain;
-      background:#fff;
+      /* ไม่ใช้ transform/overflow ใน iframe → ไม่มี scroll ภายใน */
     }
 
     .runner{
-      flex:0 0 auto;
-      height:8px; margin:8px auto 10px; border-radius:999px; width:88%;
+      height:8px; margin:12px auto 10px; border-radius:999px; width:88%;
       background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
       box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.4);
       max-width:100%;
     }
-    .safe-bottom{ height: calc(env(safe-area-inset-bottom, 0) + 6px); flex:0 0 auto; }
 
-    /* iOS SAFE MODE: page scroll (more stable), iframe becomes tall */
-    .ios body{
-      overflow-y:auto;                     /* allow page scroll on iOS */
-      min-height:100svh;
+    /* Tablet */
+    @media (max-width:1024px){
+      .iframe-wrap{ height: var(--form-h-tablet); }
     }
-    .ios .container{
-      height:auto;
-      min-height:100svh;                   /* use svh for iOS bars */
-      display:block;
-      margin:0 auto;
-    }
-    .ios .stage-card{
-      margin:16px auto;
-    }
-    .ios .iframe-wrap{
-      position:relative;
-      height:auto;                         /* let JS set a big height */
-    }
-    .ios iframe{
-      position:relative;
-      display:block;
-      width:100%;
-      height: var(--ios-iframe-h, 3000px); /* fallback if JS blocked */
+    /* Mobile */
+    @media (max-width:768px){
+      .iframe-wrap{ height: var(--form-h-mobile); }
     }
   </style>
 </head>
@@ -122,7 +104,6 @@
         <img src="cheer.png" class="logo" alt="Glamorous Cheer Logo">
         <div class="ribbon">Glamorous • Cheer Day</div>
         <h1>Own the Stage ✨</h1>
-        <!-- 3 บรรทัด centered -->
         <p class="sub">
           <span>Bangkok University</span><br>
           <span>22 ตุลาคม 2568</span><br>
@@ -130,9 +111,8 @@
         </p>
       </div>
 
-      <div class="iframe-wrap" id="wrap">
+      <div class="iframe-wrap">
         <iframe
-          id="form"
           src="https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform?embedded=true"
           loading="lazy" allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
@@ -140,29 +120,7 @@
       </div>
 
       <div class="runner" aria-hidden="true"></div>
-      <div class="safe-bottom"></div>
     </div>
   </div>
-
-  <script>
-    // Detect iOS/iPadOS (incl. iPad with desktop UA)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-    if (isIOS) {
-      document.documentElement.classList.add('ios');
-
-      // In iOS safe mode: make iframe tall enough so the whole page scrolls smoothly
-      function setIOSHeight(){
-        const head = document.querySelector('.head');
-        const base = Math.max(800, window.innerHeight * 2.2); // generous height
-        // if the header is tall, add a bit more
-        const target = Math.round(base + head.offsetHeight * 0.2);
-        document.documentElement.style.setProperty('--ios-iframe-h', target + 'px');
-      }
-      window.addEventListener('load', setIOSHeight, {once:true});
-      window.addEventListener('resize', () => { clearTimeout(window.__rsz); window.__rsz=setTimeout(setIOSHeight,120); });
-    }
-  </script>
 </body>
 </html>
