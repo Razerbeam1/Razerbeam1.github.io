@@ -12,36 +12,50 @@
       --logo-w: clamp(120px, 28vw, 220px);
     }
 
+    /* เตรียมพื้นฐานให้ “ไม่มีสกรอลล์หน้า” และใช้ขนาดจอจริงบนมือถือ */
     html, body { height: 100%; }
     body{
       margin:0; color:#fff; font-family: system-ui, sans-serif;
+      overflow: hidden;                 /* ห้าม body สกรอลล์ */
+      min-height: 100dvh;               /* ใช้ dvh กันแถบมือถือ */
       background:
         radial-gradient(900px 500px at 80% 10%, rgba(255,244,228,.08), transparent 55%),
         linear-gradient(180deg, var(--blue-1), var(--blue-2) 60%, var(--plum-2));
+      display: flex; justify-content: center;      /* จัดกลางแนวนอน */
     }
 
-    .container{ max-width:1080px; margin:16px auto 24px; padding:0 12px; }
+    /* คอนเทนเนอร์สูงเท่าหน้าจอพอดี */
+    .container{
+      width: min(100%, 1080px);
+      height: 100dvh;                   /* สูงพอดีหน้าจอ */
+      padding: 0 12px;
+      box-sizing: border-box;
+      display: flex;
+    }
 
+    /* การ์ดเวที: เป็นคอลัมน์ (หัว + พื้นที่ฟอร์ม) */
     .stage-card{
+      flex: 1;
+      display: flex; flex-direction: column;
       border-radius: 24px;
       box-shadow: 0 30px 80px rgba(0,0,0,.45);
       background:
         radial-gradient(60% 120% at 50% 0%, rgba(255,255,255,.06), transparent 42%),
         radial-gradient(90% 160% at 50% 120%, rgba(0,0,0,.18), transparent 52%),
         linear-gradient(160deg, #14143a 0%, #22236b 55%, #2f2a7a 100%);
+      overflow: hidden;                 /* ครอบขอบมนโดยไม่ล้น */
     }
 
-    /* จัดกึ่งกลางด้วย Flex ให้เป๊ะ */
+    /* ส่วนหัวอยู่บนสุด ไม่กินพื้นที่เกินจำเป็น */
     .head{
-      position: relative; z-index:1;
-      padding:18px 18px 10px;
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-      text-align:center;
+      padding: 12px 16px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      text-align: center;
+      flex: 0 0 auto;                  /* ความสูงพอดีเนื้อหัว */
     }
     .logo{
       display:block; width:var(--logo-w); height:auto; margin-inline:auto;
       filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
-      transform: translateX(0); /* ปรับได้ถ้ารูปมีขอบโปร่งไม่สมดุล */
     }
     .ribbon{
       display:inline-block; padding:8px 16px; border-radius:999px;
@@ -49,46 +63,48 @@
       color:#321a05; font-weight:700; letter-spacing:.3px;
       box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
     }
-    h1{ margin:4px 0 2px; font-weight:800; letter-spacing:.4px; }
-    .sub{ margin:0 10px 10px; opacity:.95; text-wrap:balance; }
+    h1{ margin: 2px 0; font-weight:800; letter-spacing:.4px; }
+    .sub{ margin:0 8px 6px; opacity:.95; text-wrap:balance; }
 
-    /* พื้นที่ฟอร์ม: ไม่กำหนดความสูงตายตัวแล้ว — เดี๋ยว JS จะคำนวณให้ */
+    /* พื้นที่ฟอร์ม: ยืดกิน “ที่เหลือทั้งหมด” และให้ iframe สกรอลล์ภายใน */
     .iframe-wrap{
-      position:relative; width:100%;
+      position: relative;
+      flex: 1 1 auto;                  /* กินพื้นที่ที่เหลือทั้งหมด */
+      min-height: 0;                   /* สำคัญ! ให้ลูกสูงได้เต็มโดยไม่บังคับสกรอลล์ด้านนอก */
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border-top: 1px solid rgba(255,255,255,.18);
       border-bottom: 1px solid rgba(255,255,255,.12);
-      /* ปล่อยให้สูงเท่าที่ JS ตั้งค่า */
     }
     iframe{
-      position:absolute; inset:0; width:100%; height:100%;
-      border:0; display:block;
-      /* ห้ามใช้ transform กับ iframe */
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      border: 0; display: block;
+      /* ไม่ใช้ transform เพื่อเลี่ยงปัญหาสกรอลล์บนมือถือ */
     }
 
+    /* เส้นพรมล่าง: ให้กินพื้นที่น้อยและไม่ทำให้ล้น */
     .runner{
-      height:10px; margin:16px auto 0; border-radius:999px; width:90%;
+      flex: 0 0 auto;
+      height: 8px; margin: 8px auto 10px; border-radius: 999px; width: 88%;
       background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
       box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.4);
     }
 
-    /* กันขอบล่างบน iOS notch */
-    .safe-bottom{ height: calc(env(safe-area-inset-bottom, 0) + 16px); }
+    /* เผื่อ safe-area ล่างเล็กน้อยโดยไม่ทำให้ล้น */
+    .safe-bottom{ height: calc(env(safe-area-inset-bottom, 0) + 6px); flex: 0 0 auto; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="stage-card" id="card">
-      <div class="head" id="head">
+    <div class="stage-card">
+      <div class="head">
         <img src="cheer.png" class="logo" alt="Glamorous Cheer Logo">
         <div class="ribbon">Glamorous • Cheer Day</div>
         <h1>Own the Stage ✨</h1>
         <p class="sub">Bangkok University • 22 ตุลาคม 2568 • 16:00–21:30</p>
       </div>
 
-      <div class="iframe-wrap" id="wrap">
+      <div class="iframe-wrap">
         <iframe
-          id="form"
           src="https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform?embedded=true"
           loading="lazy" allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
@@ -96,56 +112,8 @@
       </div>
 
       <div class="runner" aria-hidden="true"></div>
+      <div class="safe-bottom"></div>
     </div>
-
-    <div class="safe-bottom"></div>
   </div>
-
-  <script>
-    // คำนวณความสูงที่เหลือของหน้าจอ แล้วตั้งให้ iframe-wrap
-    function setIframeHeight() {
-      const wrap = document.getElementById('wrap');
-      const head = document.getElementById('head');
-      const card = document.getElementById('card');
-
-      // ระยะที่มีอยู่ใน viewport ตอนนี้ (รวมแถบบราวเซอร์มือถือ)
-      const vh = window.innerHeight;
-
-      // padding/margin รอบ ๆ การ์ด/คอนเทนเนอร์
-      const containerStyles = getComputedStyle(document.querySelector('.container'));
-      const containerPaddingY = parseFloat(containerStyles.paddingTop) + parseFloat(containerStyles.paddingBottom);
-
-      // ความสูงส่วนหัว + runner + padding ที่ไม่ใช่พื้นที่ฟอร์ม
-      const runnerH = 26; // เส้นพรม + margin โดยประมาณ
-      const cardExtra = 0; // เผื่ออนาคตถ้ามี padding ใน card
-
-      const used = head.offsetHeight + runnerH + cardExtra + containerPaddingY;
-
-      // เผื่อ safe-area-inset-bottom (iOS)
-      const safe = parseInt(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)')) || 0;
-
-      // ความสูงที่เหลือให้ iframe
-      let target = vh - used - safe - 16; // -16 กันชนล่างเล็กน้อย
-      const minH = 700; // กันหน้าจอเตี้ยเกิน
-      if (target < minH) target = minH;
-
-      wrap.style.height = target + 'px';
-    }
-
-    // เรียกตอนโหลดเสร็จ และตอนหมุนจอ/ย่อ-ขยาย
-    window.addEventListener('load', setIframeHeight);
-    window.addEventListener('resize', () => {
-      // บางมือถือ firing resize บ่อย—debounce เล็กน้อย
-      clearTimeout(window.__rsz);
-      window.__rsz = setTimeout(setIframeHeight, 100);
-    });
-
-    // บางเบราว์เซอร์บนมือถือเปลี่ยนแถบ UI ตอนสกอลล์—อัปเดตความสูงเป็นครั้งคราว
-    let tick = 0;
-    const iv = setInterval(() => {
-      if (tick++ > 30) return clearInterval(iv); // อัปเดตแค่ช่วงแรก ๆ พอ
-      setIframeHeight();
-    }, 300);
-  </script>
 </body>
 </html>
