@@ -6,13 +6,17 @@
   <title>Glamorous Cheer – Registration</title>
   <style>
     :root{
+      /* สีธีม */
       --gold-1:#E6BE72; --gold-2:#D4A84A; --gold-3:#8A5E1E;
-      --blue-1:#201B59; --blue-2:#2E2A78;
-      --plum-1:#1A0F2E; --plum-2:#3A1F5C;
+      --blue-1:#201B59; --blue-2:#2E2A78; --plum-2:#3A1F5C;
       --burgundy:#5C0F1B;
+
+      /* ความสูงฟอร์ม (ปรับเลขนี้ให้พอดีกับความยาวฟอร์มจริง) */
+      --form-h-desktop: 2600px;
+      --form-h-mobile: 3000px;
     }
 
-    /* ฉากรวม: ไล่เฉดน้ำเงินเข้ากับโทนเดิม */
+    /* พื้นหลังรวมของหน้า */
     body{
       margin:0; min-height:100vh; font-family: system-ui, sans-serif; color:#fff;
       background:
@@ -21,40 +25,38 @@
       display:grid; place-items:center;
     }
 
-    /* การ์ดครอบ iframe (ปรับให้ไม่มี padding ซ้อนทับ) */
+    /* กล่องหลัก (ไม่มี padding เพื่อให้ฟอร์มแนบขอบ), เอา overflow:hidden ออกเพื่อกันอาการเลื่อนไม่สุด */
     .stage-card{
       width:min(100%, 1080px);
       margin:16px;
-      padding:0;                                   /* ไม่มี padding เพื่อให้ฟอร์มชิดขอบ */
-      border-radius: 20px;
-      overflow:hidden;                              /* ครอบขอบมน */
-      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
-      position: relative;
-      background: #0f1430;
+      padding:0;
+      border-radius:20px;
+      position:relative;
+      box-shadow:0 30px 80px rgba(0,0,0,.45);
+      background:#0f1430; /* เผื่อโหลดภาพช้า */
     }
 
-    /* ใส่ภาพม่านเป็นฉากหลังที่กรอบ (เต็มขอบ) */
+    /* BG ม่าน: ใช้รูป cheer.png ที่อยู่โฟลเดอร์เดียวกับ index.html */
     .stage-card::before{
       content:"";
       position:absolute; inset:0;
-      background: url("./cheer.png") center/cover no-repeat; /* ← เปลี่ยนชื่อไฟล์ที่นี่ */
-      filter: none; /* ใส่ blur(.5px) ได้ถ้าต้องการนุ่มขึ้น */
-      z-index: 0;
+      background: url("cheer.jpg") center/cover no-repeat; /* ← ชื่อไฟล์ต้องตรง */
+      z-index:0;
     }
 
-    /* ชั้นทับเพิ่มคอนทราสต์เล็กน้อย */
+    /* ไลท์/เงาเพิ่มมิติบน BG */
     .stage-card::after{
       content:"";
       position:absolute; inset:0;
-      background: radial-gradient(60% 120% at 50% 0%, rgba(0,0,0,.15), transparent 40%),
-                  radial-gradient(90% 150% at 50% 120%, rgba(0,0,0,.25), transparent 50%);
-      z-index: 1;
-      pointer-events:none;
+      background:
+        radial-gradient(60% 120% at 50% 0%, rgba(0,0,0,.12), transparent 42%),
+        radial-gradient(90% 160% at 50% 120%, rgba(0,0,0,.22), transparent 52%);
+      z-index:1; pointer-events:none;
     }
 
-    /* ส่วนหัว (ริบบิ้น/หัวเรื่อง) */
+    /* ส่วนหัว */
     .head{
-      position: relative; z-index:2; /* ให้อยู่เหนือ BG */
+      position:relative; z-index:2;
       padding: 14px 18px 8px;
       text-align:center;
     }
@@ -65,29 +67,24 @@
       color:#321a05; font-weight:700; letter-spacing:.3px;
       box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
     }
-    h1{ margin: 6px 0 2px; font-weight:800; letter-spacing:.4px; }
+    h1{ margin:6px 0 2px; font-weight:800; letter-spacing:.4px; }
     .sub{ margin:0 0 8px; opacity:.95; }
 
-    /* กรอบฟอร์ม: ชิดขอบจริง ๆ */
+    /* พื้นที่ฟอร์ม: ให้ทั้งหน้าเลื่อน (ไม่ให้มีสกอลล์ใน iframe เอง) */
     .iframe-wrap{
-      position:relative; z-index:2;
-      width:100%;
-      height: auto;
-      /* ตั้งความสูงคงที่ให้พอดีกับฟอร์ม; ปรับตามเนื้อหาจริง */
-      min-height: 1558px;           /* ← ปรับเลขนี้ให้พอดีหน้า */
-      /* ไม่มีพื้นหลัง/ไม่มีรัศมี เพื่อให้ BG โผล่เต็ม */
+      position:relative; z-index:2; width:100%;
+      height: var(--form-h-desktop);   /* ตั้งความสูงคงที่ให้พอทั้งหน้า */
       background: transparent;
+      /* ไม่ใช้ overflow:hidden เพื่อกันเลื่อนติด */
     }
 
-    /* จัด iframe ให้เต็มพื้นที่แบบแนบชิด */
     iframe{
       position:absolute; inset:0; width:100%; height:100%; border:0; display:block;
-      /* ถ้าฟอร์มดูมี margin ภายในเยอะ ลองย่อสเกลเล็กน้อยให้ขอบแนบแน่นขึ้น: */
-      /* transform: scale(.985); transform-origin: top center; */
+      /* อย่าใช้ transform กับ iframe เพราะจะทำให้สกอลล์เพี้ยนบนมือถือ */
     }
 
     @media (max-width: 768px){
-      .iframe-wrap{ min-height: 1800px; } /* กันกรณีฟอร์มยาวบนมือถือ */
+      .iframe-wrap{ height: var(--form-h-mobile); }
     }
   </style>
 </head>
