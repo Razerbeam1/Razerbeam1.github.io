@@ -2,27 +2,28 @@
 <html lang="th">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Glamorous Cheer – Registration</title>
   <style>
     :root{
+      /* Theme */
       --gold-1:#E6BE72; --gold-2:#D4A84A; --gold-3:#8A5E1E;
       --blue-1:#201B59; --blue-2:#2E2A78; --plum-2:#3A1F5C;
       --burgundy:#5C0F1B;
       --logo-w: clamp(120px, 28vw, 220px);
 
-      /* ตั้ง “ความสูงฟอร์ม” ให้ยาวพอจนไม่ต้องเลื่อนใน iframe */
-      --form-h-desktop: 3400px;   /* ปรับได้ตามความยาวฟอร์มจริง */
-      --form-h-tablet:  3600px;
-      --form-h-mobile:  4000px;
+      /* ตั้ง “ความสูงของฟอร์ม” ให้ยาวพอ จนไม่ต้องเลื่อนใน iframe */
+      --form-h-desktop: 3400px;   /* คอม/จอใหญ่ */
+      --form-h-tablet:  3600px;   /* iPad/แท็บเล็ต */
+      --form-h-mobile:  4000px;   /* มือถือ */
     }
 
-    /* Reset + กันล้นแนวนอน */
+    /* รีเซ็ต + กันล้นแนวนอนทุกกรณี */
     *,*::before,*::after{ box-sizing:border-box; }
     html, body { height:auto; min-height:100%; overflow-x:hidden; }
 
-    /* ใช้ page scroll เท่านั้น */
+    /* ใช้ page scroll เสมอ (เสถียรสุดสำหรับ Safari) */
     body{
       margin:0; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       background: linear-gradient(180deg, #201B59, #2E2A78 60%, #3A1F5C);
@@ -36,20 +37,19 @@
     }
 
     .stage-card{
-      border-radius:24px; overflow:hidden;           /* ครอบขอบมน */
+      border-radius:24px; overflow:hidden;       /* ครอบขอบมน */
       box-shadow:0 24px 60px rgba(0,0,0,.45);
       background: linear-gradient(160deg, #14143a 0%, #22236b 55%, #2f2a7a 100%);
     }
 
-    /* Header */
+    /* Header (กึ่งกลางด้วย Flex) */
     .head{
       padding:16px 16px 10px;
       display:flex; flex-direction:column; align-items:center; gap:8px;
       text-align:center;
     }
     .logo{
-      display:block; width:var(--logo-w); height:auto; margin-inline:auto;
-      max-width:100%;
+      display:block; width:var(--logo-w); height:auto; margin-inline:auto; max-width:100%;
       filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
     }
     .ribbon{
@@ -65,19 +65,20 @@
       word-break:keep-all; overflow-wrap:anywhere;
     }
 
-    /* ฟอร์ม: ไม่ให้ iframe สกรอลล์ → ตั้งความสูงคงที่ยาวพอ แล้วปล่อยให้ “หน้าเว็บ” เลื่อนแทน */
+    /* ฟอร์ม: ไม่ให้ iframe สกรอลล์ → ตั้งความสูงคงที่ยาวพอ แล้วให้หน้าเว็บเลื่อนแทน */
     .iframe-wrap{
       position:relative; width:100%;
-      height: var(--form-h-desktop);          /* ค่า default (เดสก์ท็อป) */
+      height: var(--form-h-desktop);        /* คอม/จอใหญ่ */
       border-top:1px solid rgba(255,255,255,.18);
       border-bottom:1px solid rgba(255,255,255,.12);
-      background: #fff;                        /* ให้พื้นที่ฟอร์มอ่านสบาย */
-      overflow: visible;                       /* ไม่ตัดขอบภายใน */
+      background:#fff;                      /* อ่านสบายตา */
+      overflow:visible;                      /* ไม่ตัดเนื้อขอบใน */
     }
     iframe{
       position:absolute; inset:0; width:100%; height:100%;
       border:0; display:block;
-      /* ไม่ใช้ transform/overflow ใน iframe → ไม่มี scroll ภายใน */
+      /* ไม่ใช้ transform/overflow ใน iframe → ไม่ต้องสกรอลล์ใน iframe */
+      background:#fff;
     }
 
     .runner{
@@ -87,11 +88,10 @@
       max-width:100%;
     }
 
-    /* Tablet */
+    /* Tablet และ Mobile: เพิ่มความสูงตามจอ เพื่อกันต้องเลื่อนใน iframe */
     @media (max-width:1024px){
       .iframe-wrap{ height: var(--form-h-tablet); }
     }
-    /* Mobile */
     @media (max-width:768px){
       .iframe-wrap{ height: var(--form-h-mobile); }
     }
@@ -104,6 +104,7 @@
         <img src="cheer.png" class="logo" alt="Glamorous Cheer Logo">
         <div class="ribbon">Glamorous • Cheer Day</div>
         <h1>Own the Stage ✨</h1>
+        <!-- 3 บรรทัด ตรงกลาง -->
         <p class="sub">
           <span>Bangkok University</span><br>
           <span>22 ตุลาคม 2568</span><br>
