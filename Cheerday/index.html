@@ -6,97 +6,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Glamorous Cheer – Registration</title>
   <style>
-    :root{
+    :root {
       --gold-1:#E6BE72; --gold-2:#D4A84A; --gold-3:#8A5E1E;
       --blue-1:#201B59; --blue-2:#2E2A78; --plum-2:#3A1F5C;
       --burgundy:#5C0F1B;
       --logo-w: clamp(120px, 28vw, 220px);
-
-      /* ขยายทีละกี่พิกเซลเมื่อใกล้สุดหน้า และเพดานสูงสุด */
-      --form-step: 900;
-      --form-max: 6000;
     }
-
-    /* รีเซ็ต + กันล้นแนวนอน */
-    *,*::before,*::after{ box-sizing:border-box; }
-    html, body { min-height:100%; overflow-x:hidden; scroll-behavior:auto; }
-
-    /* ธีมพื้นหลัง */
-    body{
-      margin:0; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: linear-gradient(180deg, #201B59, #2E2A78 60%, #3A1F5C);
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{margin:0;padding:0;overflow-x:hidden;color:#fff;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      background:linear-gradient(180deg,#201B59,#2E2A78 60%,#3A1F5C);
       -webkit-text-size-adjust:100%;
-      overflow-y:auto;                 /* หน้าเลื่อนทั้งหน้า */
-      overflow-anchor:auto;            /* ช่วยกันเด้งเล็กน้อย */
     }
-
-    .container{
-      width:min(100%,1080px);
-      margin:16px auto 24px;
-      padding:0 12px;
-    }
-
-    .stage-card{
-      border-radius:24px; overflow:hidden;
+    .container{width:min(100%,1080px);margin:16px auto;padding:0 12px;}
+    .stage-card{border-radius:24px;overflow:hidden;
       box-shadow:0 24px 60px rgba(0,0,0,.45);
-      background: linear-gradient(160deg, #14143a 0%, #22236b 55%, #2f2a7a 100%);
+      background:linear-gradient(160deg,#14143a 0%,#22236b 55%,#2f2a7a 100%);
     }
-
-    /* หัวเรื่อง */
-    .head{
-      padding:16px 16px 10px;
-      display:flex; flex-direction:column; align-items:center; gap:8px;
-      text-align:center;
+    .head{text-align:center;padding:16px 16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .logo{width:var(--logo-w);height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));}
+    .ribbon{padding:8px 16px;border-radius:999px;
+      background:linear-gradient(90deg,var(--gold-3),var(--gold-1),var(--gold-2),var(--gold-3));
+      color:#321a05;font-weight:700;letter-spacing:.3px;
+      box-shadow:0 8px 20px rgba(0,0,0,.35),inset 0 2px 8px rgba(255,255,255,.35);
+      white-space:nowrap;max-width:100%;
     }
-    .logo{
-      display:block; width:var(--logo-w); height:auto; margin-inline:auto; max-width:100%;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
+    h1{margin:4px 0 2px;font-weight:800;letter-spacing:.4px;}
+    .sub{margin:0 8px 10px;opacity:.95;line-height:1.35;}
+    .iframe-wrap{position:relative;width:100%;border-top:1px solid rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.12);background:#fff;overflow:hidden;height:auto;min-height:60vh;}
+    iframe{display:block;width:100%;height:100%;border:0;}
+    .runner{height:8px;margin:8px auto 8px;border-radius:999px;width:88%;
+      background:linear-gradient(90deg,transparent,var(--burgundy),transparent);
+      box-shadow:0 2px 10px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.4);
     }
-    .ribbon{
-      display:inline-block; padding:8px 16px; border-radius:999px;
-      background: linear-gradient(90deg, var(--gold-3), var(--gold-1), var(--gold-2), var(--gold-3));
-      color:#321a05; font-weight:700; letter-spacing:.3px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
-      white-space:nowrap; max-width:100%;
-    }
-    h1{ margin:4px 0 2px; font-weight:800; letter-spacing:.4px; }
-    .sub{
-      margin:0 8px 10px; opacity:.95; text-align:center; line-height:1.35;
-      word-break:keep-all; overflow-wrap:anywhere;
-    }
-
-    /* กรอบฟอร์ม: ให้ JS ตั้งความสูงเสมอ */
-    .iframe-wrap{
-      position:relative; width:100%;
-      border-top:1px solid rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background:#fff;
-      height:auto;          /* JS จะคุมความสูง */
-      min-height:600px;
-      overflow:visible;
-      contain: layout paint; /* ลด reflow กระทบส่วนบนเวลา resize */
-    }
-    iframe{
-      position:absolute; inset:0; width:100%; height:100%;
-      border:0; display:block; background:#fff;
-      will-change: height; /* hint ให้เบราเซอร์เตรียมตัว */
-    }
-
-    .runner{
-      height:8px; margin:8px auto 8px; border-radius:999px; width:88%;
-      background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
-      box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.4);
-      max-width:100%;
-    }
-
-    /* จุดสังเกตสำหรับต่อความสูงเมื่อใกล้สุดหน้า */
-    .sentinel{ height:1px; width:100%; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="stage-card">
-      <div class="head" id="head">
+      <div class="head">
         <img src="cheer.png" class="logo" alt="Glamorous Cheer Logo">
         <div class="ribbon">Glamorous • Cheer Day</div>
         <h1>Own the Stage ✨</h1>
@@ -107,86 +56,37 @@
         </p>
       </div>
 
-      <div class="iframe-wrap" id="wrap">
+      <div class="iframe-wrap" id="formWrap">
         <iframe
-          id="form"
+          id="gform"
           src="https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform?embedded=true"
           loading="lazy" allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
 
-      <!-- เห็นตัวนี้ใกล้ ๆ ท้ายหน้า → ขยายความสูงเพิ่ม (โดยไม่ “เด้งกลับบนสุด”) -->
-      <div id="sentinel" class="sentinel"></div>
-
       <div class="runner" aria-hidden="true"></div>
     </div>
   </div>
 
   <script>
-    (function(){
-      const wrap = document.getElementById('wrap');
-      const head = document.getElementById('head');
-      const sentinel = document.getElementById('sentinel');
-      const cont = document.querySelector('.container');
-      const runner = document.querySelector('.runner');
-      const root = document.documentElement;
-
-      if(!wrap || !head || !sentinel || !cont || !runner) return;
-
-      const STEP = parseInt(getComputedStyle(root).getPropertyValue('--form-step')) || 900;
-      const MAXH = parseInt(getComputedStyle(root).getPropertyValue('--form-max'))  || 6000;
-
-      function vp(){
-        // วัดครั้งคราวเท่านั้น (ไม่ผูกกับ visualViewport ตลอดเวลาเพื่อลดเด้ง)
-        return window.innerHeight || document.documentElement.clientHeight;
-      }
-      function px(v){ return isNaN(v) ? 0 : v; }
-
-      // ตั้งความสูง “พอดีจอ” ตอนโหลด/หมุนจอ
-      function setHeightToFit(){
-        const cs = getComputedStyle(cont);
-        const contPad = px(parseFloat(cs.paddingTop)) + px(parseFloat(cs.paddingBottom));
-        const target = Math.max(
-          600,
-          Math.min(
-            MAXH,
-            vp() - head.getBoundingClientRect().height - runner.getBoundingClientRect().height - contPad - 16
-          )
-        );
-        wrap.style.height = target + 'px';
-      }
-
-      // ต่อความสูงแบบ “ไม่ทำให้เลื่อนกระโดด”
-      function growHeight(){
-        const current = parseInt(getComputedStyle(wrap).height, 10) || 0;
-        const next = Math.min(current + STEP, MAXH);
-        if (next > current) {
-          // จดตำแหน่งสกรอลล์ปัจจุบันไว้แล้วคืนกลับหลังต่อความสูง
-          const y = window.scrollY || window.pageYOffset || 0;
-          wrap.style.height = next + 'px';
-          // คืน scroll ตำแหน่งเดิมทันที (กัน Safari โยก)
-          window.scrollTo(0, y);
-        }
-      }
-
-      // ขยายเมื่อใกล้ถึง sentinel (ท้ายหน้า)
-      function setupObserver(){
-        if(!('IntersectionObserver' in window)) return;
-        const io = new IntersectionObserver(entries=>{
-          for (const e of entries){
-            if(e.isIntersecting){ growHeight(); }
-          }
-        }, { root:null, rootMargin:'0px 0px 220px 0px', threshold:0 });
-        io.observe(sentinel);
-      }
-
-      // เรียกใช้
-      window.addEventListener('load', setHeightToFit, { once:true });
-      window.addEventListener('orientationchange', ()=> setTimeout(setHeightToFit, 200));
-      // ไม่ฟัง visualViewport/resize ต่อเนื่องเพื่อลดการ “เด้ง”
-      setupObserver();
-    })();
+  // ตรวจ Safari / WebView แล้วเปลี่ยนเป็นเปิดฟอร์มตรง
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isInApp = /(FBAN|FBAV|Instagram|Line|Twitter|WebView|wv)/i.test(navigator.userAgent);
+  if (isIOS && (isSafari || isInApp)) {
+    const wrap = document.getElementById('formWrap');
+    const link = document.createElement('div');
+    link.innerHTML = `
+      <div style="text-align:center;padding:40px 16px;color:#fff;">
+        <p>⚠️ เนื่องจากเบราว์เซอร์นี้ไม่รองรับการแสดงฟอร์มแบบฝัง<br>
+        กรุณา <a href="https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform"
+        target="_blank" rel="noopener noreferrer" style="color:#FFD966;text-decoration:underline;">คลิกที่นี่</a>
+        เพื่อเปิดฟอร์มในแท็บใหม่</p>
+      </div>`;
+    wrap.innerHTML = "";
+    wrap.appendChild(link);
+  }
   </script>
 </body>
 </html>
