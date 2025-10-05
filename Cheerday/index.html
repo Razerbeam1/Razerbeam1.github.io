@@ -4,207 +4,121 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <!-- ลดโอกาสโดน in-app browser บล็อกรีเควสท์ที่มี referrer/พารามิเตอร์ยาว -->
   <meta name="referrer" content="no-referrer" />
   <title>Glamorous Cheer – Registration</title>
   <style>
     :root{
-      --gold-1:#E6BE72; --gold-2:#D4A84A; --gold-3:#8A5E1E;
       --blue-1:#201B59; --blue-2:#2E2A78; --plum-2:#3A1F5C;
-      --burgundy:#5C0F1B;
       --logo-w: clamp(120px, 28vw, 220px);
-      /* ความสูงเริ่มต้นของฟอร์ม (พอดีจอ) จะถูก JS ปรับเพิ่มอัตโนมัติเมื่อจำเป็น */
-      --form-step: 900;
-      --form-max: 6000;
     }
-
     *,*::before,*::after{ box-sizing:border-box; }
-    html, body { min-height:100%; overflow-x:hidden; }
-
-    body{
-      margin:0; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: linear-gradient(180deg, #201B59, #2E2A78 60%, #3A1F5C);
+    html,body{ margin:0; overflow-x:hidden; color:#fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--blue-1), var(--blue-2) 60%, var(--plum-2));
       -webkit-text-size-adjust:100%;
     }
-
-    /* แถบบอกว่ากำลังเปิดจาก in-app browser + ปุ่มเปิดใน Safari */
-    .appbar{
-      display:none; position:sticky; top:0; z-index:1000;
-      padding:10px 12px; text-align:center;
-      background:#111a44; color:#fff; box-shadow:0 4px 16px rgba(0,0,0,.25);
-      font-weight:700; letter-spacing:.2px;
-    }
-    .appbar button{
-      margin-left:10px; padding:8px 12px; border-radius:999px; border:0; cursor:pointer;
-      background: linear-gradient(90deg, var(--gold-3), var(--gold-1), var(--gold-2), var(--gold-3));
-      color:#321a05; font-weight:800;
+    .container{ width:min(100%,1080px); margin:16px auto; padding:0 12px; }
+    .card{ border-radius:24px; overflow:hidden;
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
+      background: linear-gradient(160deg,#14143a 0%,#22236b 55%,#2f2a7a 100%);
     }
 
-    .container{
-      width:min(100%,1080px);
-      margin:16px auto 24px;
-      padding:0 12px;
-    }
+    /* ====== HEADER บาง ๆ (มีแค่โลโก้ + ข้อความ) ====== */
+    .head{ padding:14px 14px 8px; text-align:center; }
+    .logo{ width:var(--logo-w); height:auto; display:block; margin:0 auto; }
 
-    .stage-card{
-      border-radius:24px; overflow:hidden;
-      box-shadow:0 24px 60px rgba(0,0,0,.45);
-      background: linear-gradient(160deg, #14143a 0%, #22236b 55%, #2f2a7a 100%);
-    }
+    .title{ margin:6px 0 4px; font-weight:800; letter-spacing:.3px; }
+    .sub{ margin:0 8px 12px; opacity:.95; line-height:1.35; }
 
-    .head{
-      padding:16px 16px 10px;
-      display:flex; flex-direction:column; align-items:center; gap:8px;
-      text-align:center;
-    }
-    .logo{
-      display:block; width:var(--logo-w); height:auto; margin-inline:auto; max-width:100%;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
-    }
-    .ribbon{
-      display:inline-block; padding:8px 16px; border-radius:999px;
-      background: linear-gradient(90deg, var(--gold-3), var(--gold-1), var(--gold-2), var(--gold-3));
-      color:#321a05; font-weight:700; letter-spacing:.3px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
-      white-space:nowrap; max-width:100%;
-    }
-    h1{ margin:4px 0 2px; font-weight:800; letter-spacing:.4px; }
-    .sub{
-      margin:0 8px 10px; opacity:.95; text-align:center; line-height:1.35;
-      word-break:keep-all; overflow-wrap:anywhere;
-    }
-
-    /* พื้นที่ฟอร์ม: จะตั้งความสูงเริ่มต้นแบบ "พอดีจอ" ด้วย JS
-       แล้วค่อย ๆ เพิ่มทีละ step เมื่อเลื่อนใกล้สุดหน้า (ตัดปัญหาช่องว่างล่างเยอะ) */
-    .iframe-wrap{
+    /* ====== พื้นที่ฟอร์ม (สูงพอดีจอแบบง่าย ๆ) ====== */
+    .wrap{
       position:relative; width:100%;
-      border-top:1px solid rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background:#fff;
+      background:#fff; border-top:1px solid rgba(255,255,255,.15); border-bottom:1px solid rgba(255,255,255,.1);
+      /* สูง = สูงหน้าต่าง − ส่วนหัว − margin เฉลี่ยเล็กน้อย */
+      height: calc(100svh - var(--head-h, 220px) - 16px);
+      min-height: 600px;  /* กันจอเตี้ยมาก */
       overflow:visible;
-      min-height: 800px;
-      height:auto; /* ให้ JS ตั้งค่า */
     }
-    iframe{
-      position:absolute; inset:0; width:100%; height:100%;
-      border:0; display:block; background:#fff;
-    }
+    iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; background:#fff; }
 
-    .runner{
-      height:8px; margin:12px auto 10px; border-radius:999px; width:88%;
-      background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
-      box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.4);
-      max-width:100%;
+    /* ปุ่มเปิดฟอร์มเต็มหน้า (ใช้เฉพาะ iOS in-app) */
+    .openfull{ display:none; text-align:center; padding:28px 16px; }
+    .btn{
+      appearance:none; border:0; cursor:pointer; border-radius:999px;
+      padding:10px 16px; font-weight:800; color:#321a05;
+      background: linear-gradient(90deg,#8A5E1E,#E6BE72,#D4A84A,#8A5E1E);
+      box-shadow:0 8px 18px rgba(0,0,0,.25);
     }
-
-    .sentinel{ height:1px; width:100%; }
   </style>
 </head>
 <body>
-  <!-- แสดงเฉพาะตอนเปิดผ่าน IG/FB in-app -->
-  <div class="appbar" id="appbar">
-    เปิดลิงก์นี้ใน Safari จะเสถียรกว่า
-    <button id="openSafari">เปิดใน Safari</button>
-  </div>
-
   <div class="container">
-    <div class="stage-card">
-      <div class="head" id="head">
-        <img src="cheer.png" class="logo" alt="Glamorous Cheer Logo">
-        <div class="ribbon">Glamorous • Cheer Day</div>
-        <h1>Own the Stage ✨</h1>
+    <div class="card">
+      <header class="head" id="head">
+        <!-- ถ้า “โลโก้ทำให้เป็น” แล้ว ไม่ต้องแก้อะไร แค่เปลี่ยนไฟล์ cheer.png -->
+        <img src="cheer.png" alt="Glamorous Cheer" class="logo">
+        <h1 class="title">Own the Stage ✨</h1>
         <p class="sub">
-          <span>Bangkok University</span><br>
-          <span>22 ตุลาคม 2568</span><br>
-          <span>16:00–21:30</span>
+          Bangkok University<br>
+          22 ตุลาคม 2568<br>
+          16:00–21:30
         </p>
-      </div>
+      </header>
 
-      <div class="iframe-wrap" id="wrap">
+      <!-- ฝังฟอร์ม (จะถูกซ่อนใน iOS in-app) -->
+      <div class="wrap" id="wrap">
         <iframe
-          id="form"
+          id="gform"
           src="https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform?embedded=true"
-          loading="lazy" allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+          loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
 
-      <div id="sentinel" class="sentinel"></div>
-      <div class="runner" aria-hidden="true"></div>
+      <!-- ปุ่มเปิดฟอร์มเต็มหน้า (แสดงเฉพาะ iOS in-app) -->
+      <div class="openfull" id="openfull">
+        <p style="margin:0 0 10px">เบราว์เซอร์นี้ไม่รองรับการฝังฟอร์ม</p>
+        <button class="btn" id="openBtn">เปิดฟอร์มแบบเต็มหน้า</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // 1) ล้างพารามิเตอร์ติดตาม (fbclid, gclid, utm_*) ออกจาก URL ให้สะอาด
-    (function cleanTrackingParams(){
-      const url = new URL(window.location.href);
-      const params = url.searchParams;
-      const keys = [...params.keys()];
-      let dirty = false;
-      keys.forEach(k=>{
-        if (k === 'fbclid' || k === 'gclid' || k.startsWith('utm_')) {
-          params.delete(k); dirty = true;
-        }
-      });
-      if (dirty) history.replaceState({}, document.title, url.pathname + (params.toString()?('?'+params.toString()):''));
-    })();
-
-    // 2) ตรวจ in-app browser (Instagram/Facebook) แล้วโชว์ปุ่ม "เปิดใน Safari"
-    (function showOpenInSafari(){
-      const ua = navigator.userAgent || '';
-      const isIG = /Instagram/i.test(ua);
-      const isFB = /FBAN|FBAV|FB_IAB|FB_IAB\/FB4A|FB_IAB\/FB4A/i.test(ua);
-      if (isIG || isFB){
-        const bar = document.getElementById('appbar');
-        if (bar) bar.style.display = 'block';
-        const btn = document.getElementById('openSafari');
-        if (btn){
-          btn.addEventListener('click', ()=>{
-            // พยายามเปิดด้วย Safari ภายนอก
-            const cleanUrl = location.origin + location.pathname;
-            // _blank มักจะเด้งออกจาก in-app ไป default browser
-            window.open(cleanUrl, '_blank', 'noopener,noreferrer');
-          });
-        }
-      }
-    })();
-
-    // 3) ตั้งความสูงฟอร์มอัตโนมัติ: เริ่ม "พอดีจอ" แล้วขยายทีละ step เมื่อเลื่อนใกล้ล่าง
-    (function autoGrowIframe(){
-      const wrap = document.getElementById('wrap');
+    // ตั้งตัวแปรความสูงส่วนหัวให้ CSS ใช้คำนวณ wrap
+    (function(){
       const head = document.getElementById('head');
-      const sentinel = document.getElementById('sentinel');
-      const root = document.documentElement;
-      if(!wrap || !head || !sentinel) return;
-
-      const STEP = parseInt(getComputedStyle(root).getPropertyValue('--form-step')) || 900;
-      const MAXH = parseInt(getComputedStyle(root).getPropertyValue('--form-max')) || 6000;
-
-      function setInitialHeight(){
-        const vh = window.innerHeight;
-        const padding = 40; // กันชนเล็กน้อย
-        let target = Math.max(800, vh - head.offsetHeight - padding);
-        target = Math.min(target, MAXH);
-        wrap.style.height = target + 'px';
+      if (head) {
+        const h = Math.round(head.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--head-h', h + 'px');
+        window.addEventListener('orientationchange', ()=> {
+          setTimeout(()=> {
+            const hh = Math.round(head.getBoundingClientRect().height);
+            document.documentElement.style.setProperty('--head-h', hh + 'px');
+          }, 180);
+        });
       }
+    })();
 
-      function setupObserver(){
-        if(!('IntersectionObserver' in window)) return;
-        const io = new IntersectionObserver(entries=>{
-          entries.forEach(e=>{
-            if(e.isIntersecting){
-              let current = parseInt(getComputedStyle(wrap).height, 10) || 0;
-              const next = Math.min(current + STEP, MAXH);
-              if(next > current) wrap.style.height = next + 'px';
-            }
-          });
-        },{ root:null, rootMargin:'0px 0px 200px 0px', threshold:0 });
-        io.observe(sentinel);
+    // ล้างพารามิเตอร์ติดตาม (fbclid/gclid/utm) ให้ URL สะอาด
+    (function(){
+      const url = new URL(location.href); const p = url.searchParams; let dirty=false;
+      [...p.keys()].forEach(k=>{ if(k==='fbclid'||k==='gclid'||k.startsWith('utm_')){ p.delete(k); dirty=true; }});
+      if(dirty) history.replaceState({}, document.title, url.pathname + (p.toString()?('?'+p.toString()):''));
+    })();
+
+    // ถ้าเป็น iOS + เปิดผ่าน in-app (Instagram/FB/LINE/Twitter/WebView) → ซ่อน iframe แล้วโชว์ปุ่ม
+    (function(){
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/.test(ua);
+      const isInApp = /(FBAN|FBAV|Instagram|Line|Twitter|WebView|wv)/i.test(ua);
+      if (isIOS && isInApp){
+        document.getElementById('wrap').style.display = 'none';
+        document.getElementById('openfull').style.display = 'block';
+        document.getElementById('openBtn').addEventListener('click', ()=>{
+          window.open(
+            'https://docs.google.com/forms/d/e/1FAIpQLScKd0s0ACS0ThMMDJKYJl-B2L3r_xYRJ2ltRS5Ie0RaU6UaPw/viewform',
+            '_blank','noopener,noreferrer'
+          );
+        });
       }
-
-      window.addEventListener('load', setInitialHeight, {once:true});
-      window.addEventListener('resize', ()=>{ clearTimeout(window.__rsz); window.__rsz = setTimeout(setInitialHeight,120); });
-      setupObserver();
     })();
   </script>
 </body>
