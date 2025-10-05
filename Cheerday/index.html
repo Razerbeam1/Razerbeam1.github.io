@@ -9,71 +9,95 @@
       --gold-1:#E6BE72; --gold-2:#D4A84A; --gold-3:#8A5E1E;
       --blue-1:#201B59; --blue-2:#2E2A78;
       --plum-1:#1A0F2E; --plum-2:#3A1F5C;
-      --spark:#FFF4E4; --burgundy:#5C0F1B;
+      --burgundy:#5C0F1B;
     }
 
-    /* ฉากรวม: ม่านสีน้ำเงิน+สปอตไลต์ */
+    /* ฉากรวม: ไล่เฉดน้ำเงินเข้ากับโทนเดิม */
     body{
       margin:0; min-height:100vh; font-family: system-ui, sans-serif; color:#fff;
       background:
-        radial-gradient(1200px 600px at 50% -100px, rgba(255,255,255,.18), transparent 60%),
-        radial-gradient(900px 500px at 20% 0%, rgba(255,240,216,.12), transparent 50%),
-        radial-gradient(900px 500px at 80% 10%, rgba(255,244,228,.10), transparent 55%),
+        radial-gradient(900px 500px at 80% 10%, rgba(255,244,228,.08), transparent 55%),
         linear-gradient(180deg, var(--blue-1), var(--blue-2) 60%, var(--plum-2));
       display:grid; place-items:center;
     }
 
-    /* การ์ดครอบ iframe ให้ฟีลเวที */
+    /* การ์ดครอบ iframe (ปรับให้ไม่มี padding ซ้อนทับ) */
     .stage-card{
       width:min(100%, 1080px);
-      margin:24px; padding: clamp(12px, 2.5vw, 28px);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 28px;
+      margin:16px;
+      padding:0;                                   /* ไม่มี padding เพื่อให้ฟอร์มชิดขอบ */
+      border-radius: 20px;
+      overflow:hidden;                              /* ครอบขอบมน */
       box-shadow: 0 30px 80px rgba(0,0,0,0.45);
-      backdrop-filter: blur(10px);
+      position: relative;
+      background: #0f1430;
     }
 
-    /* แถบทองหัวเรื่อง */
+    /* ใส่ภาพม่านเป็นฉากหลังที่กรอบ (เต็มขอบ) */
+    .stage-card::before{
+      content:"";
+      position:absolute; inset:0;
+      background: url("./cheer.png") center/cover no-repeat; /* ← เปลี่ยนชื่อไฟล์ที่นี่ */
+      filter: none; /* ใส่ blur(.5px) ได้ถ้าต้องการนุ่มขึ้น */
+      z-index: 0;
+    }
+
+    /* ชั้นทับเพิ่มคอนทราสต์เล็กน้อย */
+    .stage-card::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(60% 120% at 50% 0%, rgba(0,0,0,.15), transparent 40%),
+                  radial-gradient(90% 150% at 50% 120%, rgba(0,0,0,.25), transparent 50%);
+      z-index: 1;
+      pointer-events:none;
+    }
+
+    /* ส่วนหัว (ริบบิ้น/หัวเรื่อง) */
+    .head{
+      position: relative; z-index:2; /* ให้อยู่เหนือ BG */
+      padding: 14px 18px 8px;
+      text-align:center;
+    }
     .ribbon{
-      display:inline-block;
-      margin: 0 auto 14px auto; padding: 10px 18px;
+      display:inline-block; margin: 10px auto; padding: 8px 16px;
       border-radius: 999px;
       background: linear-gradient(90deg, var(--gold-3), var(--gold-1), var(--gold-2), var(--gold-3));
       color:#321a05; font-weight:700; letter-spacing:.3px;
       box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 2px 8px rgba(255,255,255,.35);
     }
-    h1{ margin: 6px 0 4px; text-align:center; font-weight:800; letter-spacing:.4px; }
-    .sub{ margin:0 0 18px; text-align:center; color:#F6E8FF; opacity:.95; }
+    h1{ margin: 6px 0 2px; font-weight:800; letter-spacing:.4px; }
+    .sub{ margin:0 0 8px; opacity:.95; }
 
-    /* กรอบ iframe เวทีโค้ง + รองรับมือถือ */
+    /* กรอบฟอร์ม: ชิดขอบจริง ๆ */
     .iframe-wrap{
-      position:relative; width:100%; border-radius:22px; overflow:hidden;
-      background:#fff;
-      /* สูงพอสำหรับฟอร์ม Google (ปรับเพิ่มได้ตามความยาวฟอร์มจริง) */
-      min-height: 1558px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+      position:relative; z-index:2;
+      width:100%;
+      height: auto;
+      /* ตั้งความสูงคงที่ให้พอดีกับฟอร์ม; ปรับตามเนื้อหาจริง */
+      min-height: 1558px;           /* ← ปรับเลขนี้ให้พอดีหน้า */
+      /* ไม่มีพื้นหลัง/ไม่มีรัศมี เพื่อให้ BG โผล่เต็ม */
+      background: transparent;
     }
-    iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 
-    /* เส้นพรมสีเบอร์กันดีด้านล่าง */
-    .runner{
-      height:10px; margin-top:16px; border-radius:999px;
-      background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
-      box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.4);
+    /* จัด iframe ให้เต็มพื้นที่แบบแนบชิด */
+    iframe{
+      position:absolute; inset:0; width:100%; height:100%; border:0; display:block;
+      /* ถ้าฟอร์มดูมี margin ภายในเยอะ ลองย่อสเกลเล็กน้อยให้ขอบแนบแน่นขึ้น: */
+      /* transform: scale(.985); transform-origin: top center; */
     }
 
     @media (max-width: 768px){
-      .stage-card{ padding:16px; }
-      .iframe-wrap{ min-height: 1800px; } /* กันกรณีเนื้อหาเยอะบนมือถือ */
+      .iframe-wrap{ min-height: 1800px; } /* กันกรณีฟอร์มยาวบนมือถือ */
     }
   </style>
 </head>
 <body>
   <div class="stage-card">
-    <div class="ribbon">Glamorous • Cheer Day</div>
-    <h1>Own the Stage ✨</h1>
-    <p class="sub">Bangkok University • 22 ตุลาคม 2568 • 16:00–21:30</p>
+    <div class="head">
+      <div class="ribbon">Glamorous • Cheer Day</div>
+      <h1>Own the Stage ✨</h1>
+      <p class="sub">Bangkok University • 22 ตุลาคม 2568 • 16:00–21:30</p>
+    </div>
 
     <div class="iframe-wrap">
       <iframe
@@ -82,8 +106,6 @@
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
     </div>
-
-    <div class="runner" aria-hidden="true"></div>
   </div>
 </body>
 </html>
